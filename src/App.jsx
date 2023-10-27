@@ -4,6 +4,7 @@ import Main from "./Main.jsx";
 import Loader from "./Loader.jsx";
 import Error from "./Error.jsx";
 import StartScreen from "./StartScreen.jsx";
+import Question from "./Question.jsx";
 
 import "./App.css";
 
@@ -18,6 +19,8 @@ const reducer = (state, action) => {
       return { ...state, questions: action.payload, status: "ready" };
     case "dataFailed":
       return { ...state, status: "error" };
+    case "start":
+      return { ...state, status: "active" };
     default:
       throw new Error("Action unknown");
   }
@@ -39,7 +42,10 @@ function App() {
       <Main>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
-        {status === "ready" && <StartScreen numQuestions={numQuestions} />}
+        {status === "ready" && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === "active" && <Question />}
       </Main>
     </div>
   );
