@@ -5,6 +5,7 @@ import Loader from "./components/Loader.jsx";
 import Error from "./components/Error.jsx";
 import StartScreen from "./components/StartScreen.jsx";
 import Question from "./components/Question.jsx";
+import NextButton from "./components/NextButton.jsx";
 
 import "./App.css";
 
@@ -35,6 +36,8 @@ const reducer = (state, action) => {
             ? state.points + question.points
             : state.points,
       };
+    case "nextQuestion":
+      return { ...state, index: state.index++, answer: null };
     default:
       throw new Error("Action unknown");
   }
@@ -57,18 +60,21 @@ function App() {
     <div className="app">
       <Header />
       <Main>
-        {status === "loading" && <Loader />}
-        {status === "error" && <Error />}
-        {status === "ready" && (
-          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
-        )}
-        {status === "active" && (
-          <Question
-            question={questions[index]}
-            dispatch={dispatch}
-            answer={answer}
-          />
-        )}
+        <>
+          {status === "loading" && <Loader />}
+          {status === "error" && <Error />}
+          {status === "ready" && (
+            <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+          )}
+          {status === "active" && (
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+          )}
+          <NextButton dispatch={dispatch} answer={answer} />
+        </>
       </Main>
     </div>
   );
