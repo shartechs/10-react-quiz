@@ -6,6 +6,7 @@ import Error from "./components/Error.jsx";
 import StartScreen from "./components/StartScreen.jsx";
 import Question from "./components/Question.jsx";
 import NextButton from "./components/NextButton.jsx";
+import Progress from "./components/Progress.jsx";
 
 import "./App.css";
 
@@ -44,11 +45,14 @@ const reducer = (state, action) => {
 };
 
 function App() {
-  const [{ questions, status, index, answer }, dispatch] = useReducer(
+  const [{ questions, status, index, answer, points }, dispatch] = useReducer(
     reducer,
     initialState
   );
+  console.log(questions);
   const numQuestions = questions.length;
+  const totalPoints = questions.reduce((acc, curr) => acc + curr.points, 0);
+  console.log("total points", totalPoints);
   console.log("questions", questions, "Status", status);
   useEffect(() => {
     fetch("http://localhost:8000/questions")
@@ -67,11 +71,20 @@ function App() {
             <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
           )}
           {status === "active" && (
-            <Question
-              question={questions[index]}
-              dispatch={dispatch}
-              answer={answer}
-            />
+            <>
+              <Progress
+                index={index}
+                numQuestions={numQuestions}
+                points={points}
+                totalPoints={totalPoints}
+                answer={answer}
+              />
+              <Question
+                question={questions[index]}
+                dispatch={dispatch}
+                answer={answer}
+              />
+            </>
           )}
           <NextButton dispatch={dispatch} answer={answer} />
         </>
